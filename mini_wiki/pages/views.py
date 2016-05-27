@@ -29,8 +29,7 @@ def verify_filename(filename):
         # They're trying to do something sneaky like /pages/../../../etc/fstab
         return False
 
-    valid_extensions = ['.md']
-    for ext in valid_extensions:
+    for ext in current_app.config['VALID_EXTENSIONS']:
         if os.path.exists(filename + ext):
             return filename + ext
     return False

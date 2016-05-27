@@ -77,7 +77,7 @@ Permissions
     "none") 
 Filetype
     If multiple render engines are supported, specify the filetype so that the
-    correct engine can be used
+    correct engine can be used 
 Layout
     The html template to use when displaying this page. Defaults to
     "default.html"

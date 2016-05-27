@@ -25,11 +25,23 @@ def read_front_matter(filename):
         content = ''.join(f.readlines())
 
     front_matter = '\n'.join(front_matter)
+    front_matter = load(front_matter)
+
+    if 'filetype' not in front_matter:
+        front_matter['filetype'] = 'markdown'
+
+    content = parse_content(content, front_matter['filetype'])
     
     return Page(
             filename=filename,
-            front_matter=load(front_matter), 
+            front_matter=front_matter, 
             contents=content)
 
+def parse_content(content, filetype):
+    if filetype.lower() in ('markdown', 'md'):
+        from markdown import markdown
+        return markdown(content, output_format='html5')
+    else:
+        raise ParseError('No available rendering engine')
 
 

@@ -14,6 +14,7 @@ class Config:
 
     TEMPLATE_DIR = os.path.abspath('./templates')
     SITE_ROOT = os.path.abspath('./_site')
+    VALID_EXTENSIONS = ['.md']
 
     @staticmethod
     def init_app(app):
