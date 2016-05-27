@@ -18,7 +18,7 @@ Contents
    License <license>
    Authors <authors>
    Changelog <changes>
-   Module Reference <api/modules>
+   Module Reference <wiki>
 
 
 Indices and tables
