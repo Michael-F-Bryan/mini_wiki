@@ -2,18 +2,14 @@
 wiki
 ====
 
-
-Add a short description here!
+A super lightweight wiki framework.
 
 
 Description
 ===========
 
-A LONGER DESCRIPTION OF YOUR PROJECT GOES HERE...
+A framework to help quickly and easily design a wiki that stores pages as text
+files on disk instead of using a database as a backend. It uses git behind the
+scenes, so every edit, creation or deletion is recorded using version control.
 
 
-Note
-====
-
-This project has been set up using PyScaffold 2.5.6. For details and usage
-information on PyScaffold see http://pyscaffold.readthedocs.org/.
