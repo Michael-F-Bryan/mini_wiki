@@ -8,7 +8,7 @@
 %}
 
 {% block title %}
-My Website
+{{ wiki.website_name|title }}
 {% endblock %}
 
 {% block head %}
@@ -29,7 +29,7 @@ My Website
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="/">My Website</a>
+      <a class="navbar-brand" href="/">{{ wiki.website_name }}</a>
     </div>
     <div class="navbar-collapse collapse">
       <ul class="nav navbar-nav">

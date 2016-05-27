@@ -5,6 +5,8 @@
 import os
 import warnings
 import argparse
+from flask_script import Manager
+from flask_migrate import Migrate, MigrateCommand
 from yaml import load
 from mini_wiki import create_app, db
 
@@ -12,6 +14,7 @@ from mini_wiki import create_app, db
 project_dir = os.path.abspath(os.path.dirname(__file__))
 config_file = os.path.join(project_dir, 'config.yml')
 
+# These are the defaults that we use for the server
 conf = {
     'secret_key': 'my super secret key',
     'sqlalchemy_commit_on_teardown': True,
@@ -20,9 +23,14 @@ conf = {
     'template_dir': os.path.join(project_dir, 'templates'),
     'site_root': os.path.join(project_dir, '_site'),
     'valid_extensions': ['.md'],
-    'debug': True,
+    'debug': False,
     'log_file': os.path.join(project_dir, 'mini_wiki.log'),
-        }
+
+    'metadata': {
+        'website_name': 'My Awesome Wiki',
+        'admin_email': 'admin@example.com',
+        },
+}
 
 try:
     from_config = load(open(config_file).read())
@@ -32,35 +40,15 @@ except FileNotFoundError:
     warning.warn('Configuration file not found inside root directory')
 
 conf = {key.upper(): value for key, value in conf.items()}
-
 app = create_app(conf)
 
-def run(**kwargs):
-    app.run(port=kwargs['port'], host=kwargs['host'])
-
-
-def main():
-    parser = argparse.ArgumentParser()
-    parser.set_defaults(func=None)
-    subparsers = parser.add_subparsers(help='sub-command help')
-
-    # Create a parser for the "run" command
-    run_parser = subparsers.add_parser('run', help='Run the dev server')
-    run_parser.add_argument('-p', '--port', dest='port', type=int, default=5000,
-            help='The port for the dev server to run on')
-    run_parser.add_argument('-H', '--host', dest='host', default='127.0.0.1',
-            help='The host for the dev server to run on')
-    run_parser.set_defaults(func=run)
-
-    args = parser.parse_args()
-
-    if args.func:
-        args.func(**args.__dict__)
-    else:
-        parser.print_help()
+# Initialize flask-manage and flask-migrate
+manager = Manager(app)
+migrate = Migrate(app, db)
+manager.add_command('db', MigrateCommand)
 
 
 if __name__ == "__main__":
-    main()
+    manager.run()
 
 

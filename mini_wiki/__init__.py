@@ -62,5 +62,8 @@ def create_app(conf):
     logger = logging.getLogger('werkzeug')
     logger.addHandler(file_handler)
 
+    # Inject the app metadata into all our templates
+    app.jinja_env.globals['wiki'] = conf['METADATA']
+
     return app
 

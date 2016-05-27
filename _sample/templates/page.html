@@ -2,11 +2,11 @@
 {% set active_page = None %}
 
 {% block title %}
-{{ page.front_matter.title }}
+{{ page.front_matter.title|title }}
 {% endblock %}
 
 {% block page_content %}
-<h1>{{ page.front_matter.title }}</h1>
+<h1>{{ page.front_matter.title|title }}</h1>
 {{ page.contents|safe }}
 {% endblock %}
 
