@@ -31,8 +31,8 @@ Would Be Cool To Have
 * Upload files and images, allowing users to link to them
 * Support merging of pages if two people are editing the same thing at the same
   time (similar to git merges)
-    * Deal with merge conflicts appropriately, possibly the same way you do in
-      git
+* Deal with merge conflicts appropriately, possibly the same way you do in
+  git
 * Simple interface to cron-like backups and jobs (probably just use cron under
   the hood)
 * Users get their own homepage
