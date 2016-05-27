@@ -13,6 +13,14 @@ Subpackages
 Submodules
 ----------
 
+mini_wiki.errors module
+-----------------------
+
+.. automodule:: mini_wiki.errors
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 mini_wiki.models module
 -----------------------
 

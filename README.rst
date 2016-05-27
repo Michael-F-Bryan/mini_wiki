@@ -19,9 +19,10 @@ Documentation
 =============
 
 The project is still quite young and its documentation still isn't complete,
-however it's hosted on `Read The Docs
-<http://mini-wiki.readthedocs.io/en/latest/>`_.
-
+however it's hosted on `Read The Docs`_. If you feel like there's something 
+the documentation is missing or that could be changed, feel free to submit an 
+`issue`_ or if you're really feeling adventurous then pull requests are more 
+than welcome.  
 
 Installation
 ============
@@ -47,3 +48,7 @@ Then start the dev server so you can see if it worked::
     cd /path/to/wiki
     python3 manage.py runserver
 
+
+.. Links
+.. _Read The Docs: http://mini-wiki.readthedocs.io/en/latest/
+.. _issue: https://github.com/Michael-F-Bryan/mini_wiki/issues/new
