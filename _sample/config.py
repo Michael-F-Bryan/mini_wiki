@@ -11,7 +11,9 @@ class Config:
     # JAKE_ADMIN = os.environ.get('JAKE_ADMIN')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     ALLOW_REGISTRATION = os.environ.get('ALLOW_REGISTRATION') or True
+
     TEMPLATE_DIR = os.path.abspath('./templates')
+    SITE_ROOT = os.path.abspath('./_site')
 
     @staticmethod
     def init_app(app):

@@ -42,6 +42,9 @@ def create_app(config_object):
     from .auth import auth as auth_blueprint
     app.register_blueprint(auth_blueprint)
 
+    from .pages import pages as pages_blueprint
+    app.register_blueprint(pages_blueprint, url_prefix='/pages')
+
     import logging
     from logging.handlers import RotatingFileHandler
     file_handler = RotatingFileHandler(
