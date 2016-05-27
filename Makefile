@@ -1,5 +1,6 @@
 DOC_DIR = ./docs
 package = mini_wiki
+RM = rm -rf
 
 
 # A shell pipeline that'll correctly get the next patch version
@@ -27,7 +28,9 @@ docs: clean
 	firefox $(DOC_DIR)/_build/html/index.html &
 
 clean:
-	rm -rf $(DOC_DIR)/_build/html
+	$(RM) $(DOC_DIR)/_build/html
+	$(RM) __pycache__
+	$(RM) *.egg-info
 
 coverage:
 	coverage run -m pytest
