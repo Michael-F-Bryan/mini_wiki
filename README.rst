@@ -3,7 +3,6 @@ wiki
 ====
 
 .. image:: https://readthedocs.org/projects/mini-wiki/badge/?version=latest
-:target: http://mini-wiki.readthedocs.io/en/latest/?badge=latest
 
 A super lightweight wiki framework.
 
@@ -14,6 +13,14 @@ Description
 A framework to help quickly and easily design a wiki that stores pages as text
 files on disk instead of using a database as a backend. It uses git behind the
 scenes, so every edit, creation or deletion is recorded using version control.
+
+
+Documentation
+=============
+
+The project is still quite young and its documentation still isn't complete,
+however it's hosted on `Read The Docs
+<http://mini-wiki.readthedocs.io/en/latest/>`_.
 
 
 Installation
@@ -31,7 +38,7 @@ Then navigate to the project's folder and install::
 Usage
 =====
 
-To create a new wiki, run ::
+To create a new wiki, run the following::
 
     python3 -m mini_wiki /path/to/wiki
 

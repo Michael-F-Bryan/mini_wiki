@@ -20,6 +20,16 @@ login_manager.session_protection = 'strong'
 login_manager.login_view = 'auth.login'
 
 def create_app(conf):
+    """
+    A factory function for creating Flask apps given a configuration 
+    dictionary.
+
+    The factory will initialise all Flask plugins, as well as change the 
+    template directory and load all blueprints.
+
+    The factory function also sets up logging and adds the `wiki` variable
+    to the template globals.
+    """
     app = Flask(__name__)
     app.config.update(conf)
 

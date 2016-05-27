@@ -1,11 +1,9 @@
 from yaml import load
 from collections import namedtuple
+from ..errors import ParseError
+
 
 Page = namedtuple('Page', ('filename', 'front_matter', 'contents'))
-
-class ParseError(Exception):
-    pass
-
 
 def read_front_matter(filename):
     front_matter = []

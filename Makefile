@@ -22,7 +22,7 @@ tag:
 	git push 
 	git push --tags
 
-docs:
+docs: clean
 	$(MAKE) --directory=$(DOC_DIR) html
 	firefox $(DOC_DIR)/_build/html/index.html &
 
@@ -33,6 +33,9 @@ coverage:
 	coverage run -m pytest
 	coverage html
 	firefox coverage_report/index.html
+
+api-docs:
+	sphinx-apidoc -o $(DOC_DIR) mini_wiki 
 
 
 .PHONY: docs clean coverage test tag
