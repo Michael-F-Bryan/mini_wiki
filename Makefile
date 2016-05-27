@@ -1,9 +1,10 @@
 DOC_DIR = ./docs
+package = mini_wiki
 
 
 # A shell pipeline that'll correctly get the next patch version
 next_version = $(shell \
-	python3 -c 'import wiki; print(wiki.__version__)' | \
+	python3 -c 'import '$(package)'; print('$(package)'.__version__)' | \
 	cut -d "+" -f 1 | \
 	awk -F "." '{patch = $$3 + 1; print($$1 "." $$2 "." patch) }' )
 
