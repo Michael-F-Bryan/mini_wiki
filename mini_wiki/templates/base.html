@@ -1,0 +1,69 @@
+{% extends "bootstrap/base.html" %}
+
+{# link_href, id, label_on_navbar, login_required #}
+{% set navigation_bar = [
+(url_for("main.homepage"), 'home', 'Home', False),
+(url_for("auth.register"), 'register', 'Registration', False),
+] 
+%}
+
+{% block title %}
+My Website
+{% endblock %}
+
+{% block head %}
+{{ super() }}
+<link rel="shortcut icon" href="{{ url_for('static', filename = 'images/favicon.ico') }}" type="image/x-icon">
+{% endblock %}
+
+{% set active_page = active_page|default('index') %}
+
+{% block navbar %}
+<div class="navbar navbar-inverse" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="submit" class="navbar-toggle" data-toggle="collapse" 
+                                                  data-target=".navbar-collapse">
+        <span class="sr-only">Toggle Navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/">My Website</a>
+    </div>
+    <div class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        {% for href, id, caption, login_required in navigation_bar %}
+            {% if not login_required or login_required and current_user.is_authenticated %}
+                <li{% if id == active_page %} class="active"{% endif %}>
+                <a href="{{ href|e }}">{{ caption|e }}</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+          {% if current_user.is_authenticated %}
+          <li><a href="{{ url_for('auth.logout') }}">Sign Out ({{ current_user.username }})
+              </a></li>
+          {% else %}
+          <li><a href="{{ url_for('auth.login') }}">Sign In</a></li>
+          {% endif %}
+      </ul>
+    </div>
+  </div> 
+</div>
+{% endblock %}
+
+
+{% block content %}
+<div class="container">
+  {% for message in get_flashed_messages() %}
+  <div class="alert alert-warning">
+    <button type="submit" class="close" data-dismiss="alert">&times;</button>
+    {{ message }}
+  </div>
+  {% endfor %}
+
+  {% block page_content %}{% endblock %}
+</div>
+{% endblock %}

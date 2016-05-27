@@ -2,6 +2,9 @@
 wiki
 ====
 
+.. image:: https://readthedocs.org/projects/mini-wiki/badge/?version=latest
+:target: http://mini-wiki.readthedocs.io/en/latest/?badge=latest
+
 A super lightweight wiki framework.
 
 
