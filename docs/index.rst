@@ -15,6 +15,7 @@ Contents
 
    README <readme>
    Design Goals <design_goals>
+   Implementation <implementation>
    License <license>
    Authors <authors>
    Changelog <changes>
