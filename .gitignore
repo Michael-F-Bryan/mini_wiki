@@ -39,6 +39,3 @@ docs/api/*
 docs/_build/*
 cover/*
 MANIFEST
-
-# User generated stuff
-_site/*
