@@ -18,7 +18,6 @@ def homepage(path):
 
     if filename:
         page = read_front_matter(filename)
-        print(page)
         return render_template('page.html',page=page)
     else:
         abort(404)

@@ -19,14 +19,14 @@ login_manager = LoginManager()
 login_manager.session_protection = 'strong'
 login_manager.login_view = 'auth.login'
 
-def create_app(config_object):
+def create_app(conf):
     app = Flask(__name__)
-    app.config.from_object(config_object)
+    app.config.update(conf)
 
     # Tell flask to get all templates from our template dir
     my_loader = jinja2.ChoiceLoader([
         app.jinja_loader,
-        jinja2.FileSystemLoader(config_object.TEMPLATE_DIR),
+        jinja2.FileSystemLoader(conf['TEMPLATE_DIR']),
     ])
     app.jinja_loader = my_loader
 
