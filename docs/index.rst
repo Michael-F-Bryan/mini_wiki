@@ -1,6 +1,6 @@
-====
-wiki
-====
+=========
+mini_wiki
+=========
 
 This is the documentation of **mini_wiki**, a lightweight, flask-based wiki that is
 primarily designed for ease of use and to make it simple for anyone to

@@ -40,5 +40,10 @@ coverage:
 api-docs:
 	sphinx-apidoc -o $(DOC_DIR) mini_wiki 
 
+bdist: clean
+	python3 setup.py bdist
 
-.PHONY: docs clean coverage test tag
+sdist: clean
+	python3 setup.py sdist
+
+.PHONY: docs clean coverage test tag sdist bdist
