@@ -42,6 +42,7 @@ clean:
 coverage:
 	coverage run -m pytest
 	coverage html
+	coverage report
 	firefox coverage_report/index.html
 	$(RM) .coverage
 

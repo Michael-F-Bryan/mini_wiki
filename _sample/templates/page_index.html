@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{# This macro is called recursively to print the children of each node #}
+{% macro format_node(tree_node) %}
+  <li>
+    <a href="/wiki/{{ tree_node.location() }}">{{ tree_node.name() }}</a>
+  </li>
+  {% if tree_node.children %}
+    <ul>
+      {% for child in tree_node.children %}
+        {% if not child.is_index() %}
+          {{ format_node(child) }}
+        {% endif %}
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endmacro %}
+
+
+{% block body %}
+<h1>Wiki Index</h1>
+
+<ul>
+  {% for child in root_node.children %}
+    {% if not child.is_index() %}
+      {{ format_node(child) }}
+    {% endif %}
+  {% endfor %}
+</ul>
+{% endblock %}
