@@ -1,0 +1,3 @@
+name: My Awesome Wiki
+log_file: my_wiki.log
+debug: true

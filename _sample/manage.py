@@ -19,6 +19,9 @@ else:
     # Use the default settings
     config = {}
 
+if 'template_dir' not in config:
+    config['template_dir'] = os.path.join(wiki_dir, 'templates')
+
 app = create_app(config)
 manager = Manager(app)
 migrate = Migrate(app, db)

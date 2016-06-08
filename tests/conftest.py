@@ -1,12 +1,19 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-"""
-    Dummy conftest.py for wiki.
-
-    If you don't know what this is for, just leave it empty.
-    Read more about conftest.py under:
-    https://pytest.org/latest/plugins.html
-"""
-from __future__ import print_function, absolute_import, division
-
+import os
 import pytest
+from mini_wiki import create_app 
+
+
+@pytest.fixture
+def app(request):
+    project_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    sample_dir = os.path.join(project_dir, '_sample')
+    template_dir = os.path.join(sample_dir, 'templates')
+
+    testing_config = {
+            'template_dir': template_dir,
+            'server_name': 'localhost',
+            }
+
+    test_client = create_app(testing_config)
+    return test_client
+

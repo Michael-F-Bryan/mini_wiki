@@ -26,6 +26,7 @@ __pycache__/*
 
 # Unittest and coverage
 htmlcov/*
+coverage_report/*
 .coverage
 .tox
 junit.xml

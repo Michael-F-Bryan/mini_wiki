@@ -36,6 +36,11 @@ setup(
             'flask-script',
             'flask-migrate',
             'pyYAML',
+            'gitpython',
+
+            'pytest',
+            'coverage',
+            'pytest-flask',
             ],
 
         cmdclass=versioneer.get_cmdclass(),

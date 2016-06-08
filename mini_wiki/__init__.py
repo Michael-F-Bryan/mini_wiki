@@ -14,20 +14,20 @@ login_manager.login_view = 'auth.login'
 
 default_settings = {
         'debug': False,
-        'testing': False,
-        'secret_key': 'some-super-secret-key-that-should-probably-be-changed',
-        'logger_handler_policy': 'always',
         'sqlalchemy_track_modifications': False,
         }
 default_settings = dict_keys_to_upper(default_settings)  # Make keys upper case
 
-def create_app(config_dict, wiki_dir=None):
-    config_dict = dict_keys_to_upper(config_dict)
+def create_app(config_dict):
+    app = Flask(__name__, template_folder=config_dict['template_dir'])
 
-    app = Flask(__name__)
+    config_dict_upper = dict_keys_to_upper(config_dict)
     app.config.update(default_settings)
-    app.config.update(config_dict)
-    app.config['wiki_dir'] = wiki_dir
+    app.config.update(config_dict_upper)
+
+    # Add the config dictionary to the jinja environment, so all templates
+    # Can access it through the "site" variable
+    app.jinja_env.globals['site'] = config_dict
 
     db.init_app(app)
     login_manager.init_app(app)

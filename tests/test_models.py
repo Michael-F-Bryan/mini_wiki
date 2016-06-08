@@ -6,7 +6,7 @@ import tempfile
 import git
 import pytest
 
-from mini_wiki.models import Page
+from mini_wiki.models import Page, PageError
 
 
 
@@ -89,7 +89,20 @@ class TestPage:
                 '')
         assert relative_filename in paths
 
+    def test_save_no_filename(self, page):
+        page.filename = None
+        with pytest.raises(PageError):
+            page.save()
+
+    def test_save_no_repo(self, page):
+        page.repo = None
+        with pytest.raises(PageError):
+            page.save()
+
     def test_commit(self, page):
         author = git.Actor('John Smith', 'john@example.org')
         page.commit('did some stuff', author=author)
         assert not page.repo.is_dirty()
+
+    def test_str(self, page):
+        assert str(page) == page.format()

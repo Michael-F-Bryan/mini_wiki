@@ -1,8 +1,8 @@
 # .coveragerc to control coverage.py
 [run]
 branch = True
-source = wiki
-# omit = bad_file.py
+source = mini_wiki
+omit = mini_wiki/_version.py
 
 [report]
 # Regexes for lines to exclude from consideration
