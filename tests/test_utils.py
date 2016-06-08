@@ -22,7 +22,7 @@ class TestValidPath:
         assert os.path.exists(temporary_file)
 
         file_path = temporary_file.replace(site_folder, '')
-        assert utils.valid_page(file_path)
+        assert utils.valid_page(file_path) == temporary_file
 
         os.remove(temporary_file)
         assert not os.path.exists(temporary_file), "The temp file wasn't deleted"

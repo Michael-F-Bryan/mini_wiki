@@ -1,5 +1,6 @@
 import os
 import yaml
+import markdown
 
 
 
@@ -11,6 +12,11 @@ class PageError(Exception):
 class ParseError(PageError):
     """
     Exception raised when there was an error parsing a page.
+    """
+
+class NoRenderEngineError(PageError):
+    """
+    Exception raised when there are no supported render engines.
     """
 
 
@@ -26,8 +32,16 @@ class Page:
         if config is not None and title is not None:
             raise ValueError("Can't pass in both the title and a config dict")
 
+        if config is None and title is None:
+            raise ValueError('Must pass in either a title or a config dictionary')
+
         if 'title' not in self.config and title:
             self.config['title'] = title
+
+        try:
+            self.title = self.config['title']
+        except KeyError as e:
+            raise PageError('Every page must have a title') from e
 
     def save(self):
         """
@@ -79,6 +93,28 @@ class Page:
         text.append('')
         text.append(self.content)
         return '\n'.join(text)
+
+    def to_html(self):
+        """
+        Get a html version of the page's content. 
+
+        Depending on the 'format' key in the page's metadata, different 
+        rendering methods will be used.
+
+        Rendering Methods
+        -----------------
+        markdown
+            Use the [markdown](https://pythonhosted.org/Markdown/) library.
+        html
+            Don't do anything to the content and return it as-is.
+        """
+        if self.config.get('format', 'markdown').lower() in ('markdown', 'md'):
+            return markdown.markdown(self.content)
+        elif self.config.get('format', '').lower() in ('html'):
+            return self.content
+        else:
+            raise NoRenderEngineError('No render engine for file: {}'.format(self.filename))
+
 
     def __str__(self):
         return self.format()
@@ -160,6 +196,3 @@ class Page:
         body = body.strip()
 
         return header, body
-        
-        
-

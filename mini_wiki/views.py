@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, abort
 from .utils import valid_page
+from .models import Page, ParseError
 
 
 main = Blueprint('main', __name__)
@@ -22,5 +23,17 @@ def homepage():
 @main.route('/wiki/<path:page_path>', methods=['GET'])
 def wiki_page(page_path):
     # Make sure the page exists
-    if not valid_page(page_path):
+    page_path = valid_page(page_path)
+    if not page_path:
         abort(404)
+
+    try:
+        page = Page.from_file(page_path)
+    except ParseError as e:
+        # The page has been formatted incorrectly
+        abort(500)
+
+    return render_template('page.html', 
+            page_title=page.title,
+            page_content=page.to_html())
+

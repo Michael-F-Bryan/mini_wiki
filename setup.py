@@ -37,6 +37,7 @@ setup(
             'flask-migrate',
             'pyYAML',
             'gitpython',
+            'markdown',
 
             'pytest',
             'coverage',

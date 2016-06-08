@@ -6,7 +6,7 @@ import tempfile
 import git
 import pytest
 
-from mini_wiki.models import Page, PageError, ParseError
+from mini_wiki.models import Page, PageError, ParseError, NoRenderEngineError
 
 
 
@@ -49,6 +49,17 @@ class TestPage:
         assert p.config['title'] == title
         assert p.filename == filename
         assert p.content == content
+        assert p.title == title
+
+        os.remove(filename)
+        assert not exists(filename)
+
+    def test_init_no_config_or_title(self):
+        _, filename = tempfile.mkstemp()
+        content = "This is just a random file"
+        
+        with pytest.raises(ValueError):
+            p = Page(filename=filename, content=content)
 
         os.remove(filename)
         assert not exists(filename)
@@ -64,6 +75,17 @@ class TestPage:
         assert p.config == config
         assert p.filename == filename
         assert p.content == content
+
+        os.remove(filename)
+        assert not exists(filename)
+
+    def test_init_with_no_title_in_config(self):
+        _, filename = tempfile.mkstemp()
+        content = "This is just a random file"
+        config = {}
+        
+        with pytest.raises(PageError):
+            p = Page(filename=filename, content=content, config=config)
 
         os.remove(filename)
         assert not exists(filename)
@@ -175,6 +197,35 @@ class TestPage:
 
         os.remove(filename)
         assert not exists(filename)
+
+    def test_to_html_no_markup_specified(self):
+        filename = 'blah'
+        title = 'Stuff'
+        content = 'This is just a random file'
+        page = Page(filename=filename, title=title, content=content)
+        should_be = '<p>This is just a random file</p>'
+        assert page.to_html() == should_be
+
+    def test_to_html_html_format(self):
+        filename = 'blah'
+        content = 'This is just a random file'
+        config = {'title': 'blah', 'format': 'html'}
+        page = Page(filename=filename, config=config, content=content)
+        should_be = 'This is just a random file'
+        assert page.to_html() == should_be
+
+    def test_to_html_unknown_format(self):
+        filename = 'blah'
+        content = 'This is just a random file'
+        config = {'title': 'blah', 'format': 'pdf'}
+        page = Page(filename=filename, config=config, content=content)
+        should_be = 'This is just a random file'
+        with pytest.raises(NoRenderEngineError):
+            page.to_html()
+
+    def test_to_html(self, page):
+        should_be = '<p>This is just a random file</p>'
+        assert page.to_html() == should_be
 
 
 class TestParser:

@@ -26,5 +26,5 @@ def valid_page(path):
     if not os.path.exists(destination):
         return False
 
-    return True
+    return destination
 
