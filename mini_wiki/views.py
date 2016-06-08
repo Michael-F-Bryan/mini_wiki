@@ -1,5 +1,7 @@
-from flask import render_template
-from . import main
+from flask import Blueprint, render_template
+
+
+main = Blueprint('main', __name__)
 
 
 @main.app_errorhandler(404)
@@ -14,3 +16,4 @@ def server_error(e):
 @main.route('/', methods=['GET'])
 def homepage():
     return render_template('homepage.html')
+

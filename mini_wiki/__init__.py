@@ -33,7 +33,7 @@ def create_app(config_dict):
     login_manager.init_app(app)
     
     # Attach routes and custom error pages
-    from .main import main as main_blueprint
+    from .views import main as main_blueprint
     app.register_blueprint(main_blueprint)
 
     if app.config.get('LOG_FILE'):
