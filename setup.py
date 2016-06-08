@@ -42,6 +42,8 @@ setup(
             'pytest',
             'coverage',
             'pytest-flask',
+            'sphinx',
+            'sphinx_rtd_theme',
             ],
 
         cmdclass=versioneer.get_cmdclass(),

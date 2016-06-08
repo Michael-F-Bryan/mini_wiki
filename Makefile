@@ -23,8 +23,11 @@ tag:
 	git push 
 	git push --tags
 
-docs: clean
+build_docs: clean
+	sphinx-apidoc -o docs $(package)
 	$(MAKE) --directory=$(DOC_DIR) html
+
+docs: build_docs
 	firefox $(DOC_DIR)/_build/html/index.html &
 
 clean:
@@ -45,10 +48,10 @@ coverage:
 api-docs:
 	sphinx-apidoc -o $(DOC_DIR) mini_wiki 
 
-bdist: clean
+bdist: build_docs
 	python3 setup.py bdist
 
-sdist: clean
+sdist: build_docs
 	python3 setup.py sdist
 
 .PHONY: docs clean coverage test tag sdist bdist

@@ -101,8 +101,7 @@ class Page:
         Depending on the 'format' key in the page's metadata, different 
         rendering methods will be used.
 
-        Rendering Methods
-        -----------------
+        Rendering Methods:
         markdown
             Use the [markdown](https://pythonhosted.org/Markdown/) library.
         html
