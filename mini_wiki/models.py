@@ -1,6 +1,7 @@
 import os
 import yaml
 import markdown
+from .utils import filename_to_title
 
 
 
@@ -21,27 +22,19 @@ class NoRenderEngineError(PageError):
 
 
 class Page:
-    def __init__(self, filename=None, content=None, title=None, repo=None, 
-            config=None):
+    def __init__(self, filename=None, content=None, repo=None, config=None):
         self.filename = filename
         self.content = content or ''
         self.repo = repo
 
         self.config = config if config else {}
 
-        if config is not None and title is not None:
-            raise ValueError("Can't pass in both the title and a config dict")
+        if 'title' not in self.config:
+            self.config['title'] = filename_to_title(self.filename)
+        else:
+            raise ValueError("You can't set the page's title in the metadata")
 
-        if config is None and title is None:
-            raise ValueError('Must pass in either a title or a config dictionary')
-
-        if 'title' not in self.config and title:
-            self.config['title'] = title
-
-        try:
-            self.title = self.config['title']
-        except KeyError as e:
-            raise PageError('Every page must have a title') from e
+        self.title = self.config['title'] 
 
     def save(self):
         """
@@ -129,6 +122,7 @@ class Page:
 
         text = open(filename).read()
         header, body = cls.parse_text(text)
+        header.pop('title', None)
 
         new_page = cls(filename=filename, config=header, content=body)
         return new_page

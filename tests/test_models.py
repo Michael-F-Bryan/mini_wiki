@@ -7,6 +7,7 @@ import git
 import pytest
 
 from mini_wiki.models import Page, PageError, ParseError, NoRenderEngineError
+from mini_wiki.utils import filename_to_title
 
 
 
@@ -20,13 +21,11 @@ def git_repo(request):
 
 @pytest.fixture
 def page(git_repo):
-    filename = join(git_repo.working_tree_dir, 'some_file.txt')
-    title = 'A Dummy File'
+    filename = join(git_repo.working_tree_dir, 'a_dummy_file.txt')
     content = "This is just a random file"
     
     return Page(filename=filename, 
                 content=content, 
-                title=title, 
                 repo=git_repo)
 
 
@@ -37,14 +36,13 @@ def test_page(page):
     assert exists(page.repo.working_tree_dir)
 
 
-
 class TestPage:
     def test_init_no_config(self):
-        _, filename = tempfile.mkstemp()
-        title = 'A Dummy File'
+        _, filename = tempfile.mkstemp(suffix='.md')
+        title = filename_to_title(filename)
         content = "This is just a random file"
         
-        p = Page(filename=filename, content=content, title=title)
+        p = Page(filename=filename, content=content)
 
         assert p.config['title'] == title
         assert p.filename == filename
@@ -54,24 +52,15 @@ class TestPage:
         os.remove(filename)
         assert not exists(filename)
 
-    def test_init_no_config_or_title(self):
-        _, filename = tempfile.mkstemp()
-        content = "This is just a random file"
-        
-        with pytest.raises(ValueError):
-            p = Page(filename=filename, content=content)
-
-        os.remove(filename)
-        assert not exists(filename)
-
     def test_init_with_config(self):
-        _, filename = tempfile.mkstemp()
+        _, filename = tempfile.mkstemp(suffix='.md')
+        title = filename_to_title(filename)
         content = "This is just a random file"
-        config = {'title': 'Some random title', 'extra': 'blah'}
+        config = {'extra': 'blah'}
         
         p = Page(filename=filename, content=content, config=config)
 
-        assert p.config['title'] == config['title']
+        assert p.config['title'] == title
         assert p.config == config
         assert p.filename == filename
         assert p.content == content
@@ -79,25 +68,16 @@ class TestPage:
         os.remove(filename)
         assert not exists(filename)
 
-    def test_init_with_no_title_in_config(self):
+    def test_init_with_title_in_config(self):
         _, filename = tempfile.mkstemp()
         content = "This is just a random file"
-        config = {}
+        config = {'title': 'blah'}
         
-        with pytest.raises(PageError):
+        with pytest.raises(ValueError):
             p = Page(filename=filename, content=content, config=config)
 
         os.remove(filename)
         assert not exists(filename)
-
-    def test_init_config_and_title_raises_error(self):
-        with pytest.raises(ValueError):
-            Page(
-                    filename='blah.txt',
-                    title='Some cool title',
-                    content='stuff',
-                    config={'stuff': 'more stuff'},
-                )
 
     def test_head(self, page):
         assert page.config == {'title': 'A Dummy File'}
@@ -178,21 +158,23 @@ class TestPage:
         assert not exists(filename)
 
     def test_from_file_valid(self):
+        _, filename = tempfile.mkstemp()
+        title = filename_to_title(filename)
+
         src = """
         ---
-        title: A Dummy File
+        title: {}
         ---
 
         The body of some file
-        """.strip()
+        """.format(title).strip()
 
-        _, filename = tempfile.mkstemp()
         open(filename, 'w').write(src)
         assert os.path.exists(filename)
 
         some_page = Page.from_file(filename)
 
-        assert some_page.config == {'title': 'A Dummy File'}
+        assert some_page.config == {'title': title}
         assert some_page.content == 'The body of some file'
 
         os.remove(filename)
@@ -200,16 +182,15 @@ class TestPage:
 
     def test_to_html_no_markup_specified(self):
         filename = 'blah'
-        title = 'Stuff'
         content = 'This is just a random file'
-        page = Page(filename=filename, title=title, content=content)
+        page = Page(filename=filename, content=content)
         should_be = '<p>This is just a random file</p>'
         assert page.to_html() == should_be
 
     def test_to_html_html_format(self):
         filename = 'blah'
         content = 'This is just a random file'
-        config = {'title': 'blah', 'format': 'html'}
+        config = {'format': 'html'}
         page = Page(filename=filename, config=config, content=content)
         should_be = 'This is just a random file'
         assert page.to_html() == should_be
@@ -217,7 +198,7 @@ class TestPage:
     def test_to_html_unknown_format(self):
         filename = 'blah'
         content = 'This is just a random file'
-        config = {'title': 'blah', 'format': 'pdf'}
+        config = {'format': 'pdf'}
         page = Page(filename=filename, config=config, content=content)
         should_be = 'This is just a random file'
         with pytest.raises(NoRenderEngineError):
