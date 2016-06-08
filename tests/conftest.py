@@ -12,6 +12,7 @@ def app(request):
     testing_config = {
             'template_dir': template_dir,
             'server_name': 'localhost',
+            'wiki_dir': sample_dir,
             }
 
     test_client = create_app(testing_config)

@@ -29,12 +29,12 @@ docs: clean
 
 clean:
 	$(RM) $(DOC_DIR)/_build/html
-	$(RM) __pycache__
 	$(RM) coverage_report
 	$(RM) *.egg-info
 	$(RM) build
 	$(RM) dist
-	$(RM) *.pyc
+	find . -type f -name "*.py[co]" -delete
+	find . -type d -name "__pycache__" -delete
 
 coverage:
 	coverage run -m pytest

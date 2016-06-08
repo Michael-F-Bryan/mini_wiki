@@ -1,4 +1,5 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, abort
+from .utils import valid_page
 
 
 main = Blueprint('main', __name__)
@@ -17,3 +18,9 @@ def server_error(e):
 def homepage():
     return render_template('homepage.html')
 
+
+@main.route('/wiki/<path:page_path>', methods=['GET'])
+def wiki_page(page_path):
+    # Make sure the page exists
+    if not valid_page(page_path):
+        abort(404)

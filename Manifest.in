@@ -1,4 +1,0 @@
-recursive-include docs *
-recursive-include _sample *
-include AUTHORS.rst LICENSE.txt README.rst 
-recursive-include tests
