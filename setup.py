@@ -9,18 +9,32 @@
 """
 
 import sys
-from setuptools import setup
+from setuptools import setup, find_packages
 import versioneer
+import configparser
 
+config = configparser.ConfigParser()
+config.read('./setup.cfg')
+config = config['metadata']
 
-def setup_package():
-    needs_sphinx = {'build_sphinx', 'upload_docs'}.intersection(sys.argv)
-    sphinx = ['sphinx'] if needs_sphinx else []
-    setup(setup_requires=['six', 'pyscaffold>=2.5a0,<2.6a0'] + sphinx,
-          version=versioneer.get_version(),
-          cmdclass=versioneer.get_cmdclass(),
-          use_pyscaffold=True)
+setup(
+        name=config['name'],
+        version=versioneer.get_version(),
+        description=config['summary'],
+        long_description=open('README.rst').read(),
+        author=config['author'],
+        author_email=config['author-email'],
+        url=config['home-page'],
+        license=config['license'],
 
+        packages=['mini_wiki'],
 
-if __name__ == "__main__":
-    setup_package()
+        install_requires=[
+            'flask',
+            'flask-login',
+            'flask-sqlalchemy',
+            ],
+
+        cmdclass=versioneer.get_cmdclass(),
+        include_package_data=True,
+)

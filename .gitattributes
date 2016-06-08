@@ -1,1 +1,2 @@
 wiki/_version.py export-subst
+mini_wiki/_version.py export-subst
