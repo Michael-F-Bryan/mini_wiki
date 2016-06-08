@@ -1,3 +1,4 @@
+import os
 import yaml
 
 
@@ -14,13 +15,19 @@ class ParseError(PageError):
 
 
 class Page:
-    def __init__(self, filename=None, content=None, title=None, repo=None):
+    def __init__(self, filename=None, content=None, title=None, repo=None, 
+            config=None):
         self.filename = filename
-        self.content = content
+        self.content = content or ''
         self.repo = repo
 
-        self.config = {}
-        self.config['title'] = title
+        self.config = config if config else {}
+
+        if config is not None and title is not None:
+            raise ValueError("Can't pass in both the title and a config dict")
+
+        if 'title' not in self.config and title:
+            self.config['title'] = title
 
     def save(self):
         """
@@ -78,14 +85,49 @@ class Page:
 
     @classmethod
     def from_file(cls, filename):
+        """
+        Given a path to a file, parse its contents and get the corresponding 
+        Page object.  
+        """
         if not os.path.exists(filename):
             raise FileNotFoundError("{} doesn't exist".format(filename))
 
         text = open(filename).read()
-        text = cls.parse_file(text)
+        header, body = cls.parse_text(text)
+
+        new_page = cls(filename=filename, config=header, content=body)
+        return new_page
 
     @staticmethod
     def parse_text(text):
+        """
+        Given a string of text, parse it and retrieve the header and content.
+
+        The text must have the following format:
+        - Line with '---' to specify the start of the header section
+        - One or more lines of valid YAML that contain metadata about the file
+        - Line with '---' to specify the end of the header section
+        - A blank line
+        - Body of the document (may be empty)
+
+        Parameters
+        ----------
+        text: str
+            The text to parse
+
+        Returns
+        -------
+        header: dict
+            A dictionary containing metadata about the file
+        body: str
+            The body of the file
+
+        Raises
+        ------
+        ParseError
+            When the file isn't formatted correctly
+
+        """
         lines = (line for line in text.splitlines())
 
         # Read in the first line

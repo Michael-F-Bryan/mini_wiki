@@ -39,7 +39,7 @@ def test_page(page):
 
 
 class TestPage:
-    def test_init(self):
+    def test_init_no_config(self):
         _, filename = tempfile.mkstemp()
         title = 'A Dummy File'
         content = "This is just a random file"
@@ -52,6 +52,30 @@ class TestPage:
 
         os.remove(filename)
         assert not exists(filename)
+
+    def test_init_with_config(self):
+        _, filename = tempfile.mkstemp()
+        content = "This is just a random file"
+        config = {'title': 'Some random title', 'extra': 'blah'}
+        
+        p = Page(filename=filename, content=content, config=config)
+
+        assert p.config['title'] == config['title']
+        assert p.config == config
+        assert p.filename == filename
+        assert p.content == content
+
+        os.remove(filename)
+        assert not exists(filename)
+
+    def test_init_config_and_title_raises_error(self):
+        with pytest.raises(ValueError):
+            Page(
+                    filename='blah.txt',
+                    title='Some cool title',
+                    content='stuff',
+                    config={'stuff': 'more stuff'},
+                )
 
     def test_head(self, page):
         assert page.config == {'title': 'A Dummy File'}
@@ -107,6 +131,53 @@ class TestPage:
     def test_str(self, page):
         assert str(page) == page.format()
 
+    def test_from_file_FileNotFound(self):
+        with pytest.raises(FileNotFoundError):
+            some_page = Page.from_file('non/existent/file.md')
+
+    def test_from_file_invalid_file(self):
+        src = """
+        ---
+        title: A Dummy File
+
+        ---
+
+        Woops, did I accidentally put a newline in the header?
+        """.strip()
+
+        _, filename = tempfile.mkstemp()
+        open(filename, 'w').write(src)
+        assert os.path.exists(filename)
+
+        with pytest.raises(ParseError):
+            some_page = Page.from_file(filename)
+
+        os.remove(filename)
+        assert not exists(filename)
+
+    def test_from_file_valid(self):
+        src = """
+        ---
+        title: A Dummy File
+        ---
+
+        The body of some file
+        """.strip()
+
+        _, filename = tempfile.mkstemp()
+        open(filename, 'w').write(src)
+        assert os.path.exists(filename)
+
+        some_page = Page.from_file(filename)
+
+        assert some_page.config == {'title': 'A Dummy File'}
+        assert some_page.content == 'The body of some file'
+
+        os.remove(filename)
+        assert not exists(filename)
+
+
+class TestParser:
     def test_parse_valid(self):
         src = """
         ---
