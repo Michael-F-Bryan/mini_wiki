@@ -30,6 +30,7 @@ docs: clean
 clean:
 	$(RM) $(DOC_DIR)/_build/html
 	$(RM) __pycache__
+	$(RM) coverage_report
 	$(RM) *.egg-info
 	$(RM) build
 	$(RM) dist
