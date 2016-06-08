@@ -1,44 +1,75 @@
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask.ext.login import UserMixin
-from datetime import datetime
-import json
-import re
-
-from . import db, login_manager
+import yaml
 
 
 
-class User(db.Model, UserMixin):
-    __tablename__ = 'users'
-
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(64), unique=True, index=True)
-    username = db.Column(db.String(64), unique=True, index=True)
-    password_hash = db.Column(db.String(128))
-
-    member_since = db.Column(db.DateTime(), default=datetime.utcnow)
-    last_seen = db.Column(db.DateTime(), default=datetime.utcnow)
-
-    @property
-    def password(self):
-        raise AttributeError('password is not a readable attribute')
-
-    @password.setter
-    def password(self, value):
-        self.password_hash = generate_password_hash(value)
-
-    def verify_password(self, password):
-        return check_password_hash(self.password_hash, password)
-
-    def ping(self):
-        self.last_seen = datetime.utcnow()
-        db.session.add(self)
-
-    def __repr__(self):
-        return '<User {}>'.format(self.username)
+class PageError(Exception):
+    """
+    A generic exception for all issues with pages.
+    """
 
 
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
+class Page:
+    def __init__(self, filename=None, content=None, title=None, repo=None):
+        self.filename = filename
+        self.content = content
+        self.repo = repo
+
+        self.config = {}
+        self.config['title'] = title
+
+    def save(self):
+        """
+        Write a copy of the 
+        """
+        if not self.filename:
+            raise PageError('No filename set')
+        elif not self.repo:
+            raise PageError('No git repository set')
+        else:
+            with open(self.filename, 'w') as f:
+                f.write(self.format())
+
+            # Then do a `git add some_file.txt`
+            self.repo.index.add([self.filename])
+
+    def commit(self, message, author):
+        """
+        Commit the file. (i.e. run "git commit -m $message")
+
+        Parameters
+        ----------
+        message: str
+            The commit message
+        author: git.Actor
+            The person making a change to the file
+        """
+        self.save()  # git add this_file.txt
+        self.repo.index.commit(message, author=author)
+
+    def header(self):
+        """
+        Create a jekyll-style header for the file.
+        """
+        head = []
+        head.append('---')
+        config = yaml.dump(self.config, default_flow_style=False).strip()
+        head.append(config)
+        head.append('---')
+
+        return '\n'.join(head)
+
+    def format(self):
+        """
+        Get a formatted form of the header and page content.
+        """
+        text = []
+        text.append(self.header())
+        text.append('')
+        text.append(self.content)
+        return '\n'.join(text)
+
+    def __str__(self):
+        return self.format()
+
+
 
