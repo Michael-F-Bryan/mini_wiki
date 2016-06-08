@@ -6,7 +6,7 @@ import tempfile
 import git
 import pytest
 
-from mini_wiki.models import Page, PageError
+from mini_wiki.models import Page, PageError, ParseError
 
 
 
@@ -106,3 +106,58 @@ class TestPage:
 
     def test_str(self, page):
         assert str(page) == page.format()
+
+    def test_parse_valid(self):
+        src = """
+        ---
+        title: Blah
+        ---
+
+        This is the body.
+        """.strip()
+        header, body = Page.parse_text(src)
+        assert header == {'title': 'Blah'}
+        assert body == 'This is the body.'
+
+    def test_parse_no_starting_dash(self):
+        src = """
+        title: Blah
+        ---
+
+        This is the body.
+        """.strip()
+        with pytest.raises(ParseError):
+            header, body = Page.parse_text(src)
+
+    def test_parse_no_ending_dash(self):
+        src = """
+        ---
+        title: Blah
+
+        This is the body.
+        """.strip()
+        with pytest.raises(ParseError):
+            header, body = Page.parse_text(src)
+
+    def test_parse_newline_in_header(self):
+        src = """
+        ---
+        title: Blah
+
+        ---
+
+        This is the body.
+        """.strip()
+        with pytest.raises(ParseError):
+            header, body = Page.parse_text(src)
+
+    def test_parse_no_newline_after_header(self):
+        src = """
+        ---
+        title: Blah
+        ---
+        This is the body.
+        """.strip()
+        with pytest.raises(ParseError):
+            header, body = Page.parse_text(src)
+
