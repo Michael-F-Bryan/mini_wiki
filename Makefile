@@ -31,6 +31,9 @@ clean:
 	$(RM) $(DOC_DIR)/_build/html
 	$(RM) __pycache__
 	$(RM) *.egg-info
+	$(RM) build
+	$(RM) dist
+	$(RM) *.pyc
 
 coverage:
 	coverage run -m pytest

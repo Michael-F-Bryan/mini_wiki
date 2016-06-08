@@ -33,6 +33,9 @@ setup(
             'flask',
             'flask-login',
             'flask-sqlalchemy',
+            'flask-script',
+            'flask-migrate',
+            'pyYAML',
             ],
 
         cmdclass=versioneer.get_cmdclass(),
