@@ -264,3 +264,8 @@ class TestParser:
         with pytest.raises(ParseError):
             header, body = Page.parse_text(src)
 
+    def test_empty_file(self):
+        src = ''
+        with pytest.raises(ParseError):
+            header, body = Page.parse_text(src)
+

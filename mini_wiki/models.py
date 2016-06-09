@@ -3,6 +3,8 @@ import yaml
 import markdown
 from .utils import filename_to_title
 
+md = markdown.Markdown(extensions=['markdown.extensions.codehilite',
+                                   'markdown.extensions.toc'])
 
 
 class PageError(Exception):
@@ -101,7 +103,7 @@ class Page:
             Don't do anything to the content and return it as-is.
         """
         if self.config.get('format', 'markdown').lower() in ('markdown', 'md'):
-            return markdown.markdown(self.content)
+            return md.convert(self.content)
         elif self.config.get('format', '').lower() in ('html'):
             return self.content
         else:
@@ -157,6 +159,9 @@ class Page:
             When the file isn't formatted correctly
 
         """
+        if len(text.strip()) == 0:
+            raise ParseError('Cannot parse an empty file')
+
         lines = (line for line in text.splitlines())
 
         # Read in the first line
